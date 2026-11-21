@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DERIVA — sonar</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="level-1">
+<div id="stage">
+  <div id="frame">
+    <canvas id="c" width="720" height="440"></canvas>
+    <div class="bracket" id="b-tl"></div><div class="bracket" id="b-tr"></div>
+    <div class="bracket" id="b-bl"></div><div class="bracket" id="b-br"></div>
+
+    <div class="hud" id="top-left">
+      <div class="label">integridad del casco</div>
+      <div class="integrity-bar" id="integrity"></div>
+    </div>
+    <div class="hud" id="top-right">
+      <div class="label">distancia</div>
+      <div class="value" id="score">0 m</div>
+      <div class="label" style="margin-top:6px;">monedas</div>
+      <div class="value gold" id="coinsHud">0</div>
+    </div>
+    <div class="hud" id="level-progress">
+      <div class="label" id="progressLabel">Fosa abisal</div>
+      <div class="bar-track"><div class="bar-fill" id="levelProgressFill"></div></div>
+    </div>
+    <div class="hud" id="bottom-hint">↑↓/WS mover · ESPACIO sonar · <span id="ultHintKey">Q</span> ultimate · ESC pausa</div>
+
+    <div id="touch">
+      <button id="touchUlt">ULT</button>
+      <button id="touchPing">SONAR</button>
+    </div>
+
+    <button id="touchPause" aria-label="Pausa">II</button>
+
+    <div id="overlay">
+      <div id="screen-menu" class="screen active">
+        <h1 class="logo">DERIVA</h1>
+        <div class="stat" id="menuTagline">Navegas a ciegas en el abismo.<br>El sonar revela lo que hay cerca, por un instante.</div>
+        <div class="menu-buttons">
+          <button data-act="nav" data-arg="levels">Jugar</button>
+          <button data-act="nav" data-arg="shop">Tienda</button>
+          <button data-act="nav" data-arg="help">Cómo jugar</button>
+          <button data-act="nav" data-arg="options">Opciones</button>
+          <button class="level-btn" id="difficultyBtn" data-act="difficulty" disabled>Dificultad: Fácil</button>
+        </div>
+        <div class="notice" id="menuNotice"></div>
+      </div>
+
+      <div id="screen-levels" class="screen">
+        <h2 id="levelsTitle">Seleccionar nivel</h2>
+        <div class="menu-buttons" id="level-list"></div>
+        <div class="menu-buttons"><button data-act="back">Volver</button></div>
+      </div>
+
+      <div id="screen-shop" class="screen">
+        <h2>Tienda</h2>
+        <div id="shop-coins-row">Monedas: <span id="shopCoins">0</span> <i class="coin"></i></div>
+        <div id="shop-body"></div>
+        <div class="menu-buttons"><button data-act="back">Volver</button></div>
+      </div>
+
+      <div id="screen-help" class="screen">
+        <h2>Cómo jugar</h2>
+        <div class="help">
+          <canvas class="pix" data-sprite="ship:explorer:abisal"></canvas>
+          <div><b>↑↓ o W/S</b> para moverte (o arrastra el dedo). <b>ESPACIO</b> lanza el sonar: las rocas y minas solo se ven mientras el pulso las toca.</div>
+          <canvas class="pix" data-sprite="mine"></canvas>
+          <div>Cada golpe quita un punto de casco. Las <b>minas</b> estallan; las <b>columnas de rocas</b> dejan un único hueco.</div>
+          <canvas class="pix" data-sprite="fish"></canvas>
+          <div>Los <b>rapes</b> nadan hacia ti: su señuelo brilla aunque no uses el sonar. Los ojos del <b>leviatán</b> también lo delatan.</div>
+          <canvas class="pix" data-sprite="powerup:shield"></canvas>
+          <div><b>Escudo</b>, <b>radar</b>, <b>ralentizador</b> y <b>reparación</b>. La <b>ultimate</b> se recarga sola.</div>
+          <canvas class="pix" data-sprite="weak"></canvas>
+          <div><b>Kraken:</b> sus ataques se anuncian en rojo. Tras un golpe de tentáculo asoma un nódulo: acércate y lanza el sonar para dañarlo. Y no te fíes de la calma.</div>
+          <canvas class="pix" data-sprite="coinBig"></canvas>
+          <div>Las monedas se conservan aunque pierdas. Gástalas en la tienda.</div>
+        </div>
+        <div class="menu-buttons"><button data-act="back">Volver</button></div>
+      </div>
+
+      <div id="screen-options" class="screen">
+        <h2>Opciones</h2>
+        <div class="options-list">
+          <div class="option-row"><label for="sfxVolume">Sonido del juego</label><input type="range" id="sfxVolume" min="0" max="100" value="70"></div>
+          <div class="option-row"><label for="uiVolume">Sonido de interfaz</label><input type="range" id="uiVolume" min="0" max="100" value="70"></div>
+          <div class="option-row"><label for="musicVolume">Música</label><input type="range" id="musicVolume" min="0" max="100" value="50"></div>
+          <div class="option-row"><label>Música del jefe (difícil)</label><button id="songBtn" data-act="song">Original</button></div>
+          <div class="option-row"><label for="muteToggle">Silenciar todo</label><input type="checkbox" id="muteToggle"></div>
+          <div class="option-row"><label for="contrastToggle">Alto contraste</label><input type="checkbox" id="contrastToggle"></div>
+          <div class="option-row"><label for="motionToggle">Reducir movimiento</label><input type="checkbox" id="motionToggle"></div>
+          <h3>Controles</h3>
+          <div class="option-row"><label>Activar ultimate</label><button id="rebindBtn" data-act="rebind">Q</button></div>
+        </div>
+        <div class="menu-buttons"><button data-act="back">Volver</button></div>
+      </div>
+
+      <div id="screen-pause" class="screen">
+        <h2>Pausa</h2>
+        <div class="menu-buttons">
+          <button data-act="resume">Reanudar</button>
+          <button data-act="retry">Reiniciar nivel</button>
+          <button data-act="nav" data-arg="options">Opciones</button>
+          <button data-act="menu">Menú principal</button>
+        </div>
+      </div>
+
+      <div id="screen-gameover" class="screen"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.DS_Store
+
+# La canción del jefe tiene copyright: se queda solo en local (el juego usa la pista sintetizada sin ella)
+assets/audio/*.mp3

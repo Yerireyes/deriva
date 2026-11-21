@@ -1,0 +1,11 @@
+{
+  "name": "deriva",
+  "version": "2.3.1",
+  "private": true,
+  "description": "DERIVA — navega a ciegas en el abismo con un sonar. Juego HTML5 sin dependencias.",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "bundle": "node tools/bundle.mjs"
+  }
+}
